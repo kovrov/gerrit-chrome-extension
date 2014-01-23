@@ -73,13 +73,19 @@ function updateIcon(changes) {
     });
 }
 
+function onAlarm(alarm) {
+    fetchChanges();
+}
+
 function onStartup() {
     console.log('background.onStartup...');
     chrome.storage.local.get("changes", function(items) {
         updateIcon(items.changes)
     });
     fetchChanges();
+    chrome.alarms.create('refresh', {periodInMinutes: 15});
 }
 
+chrome.alarms.onAlarm.addListener(onAlarm);
 chrome.runtime.onStartup.addListener(onStartup);
 chrome.runtime.onInstalled.addListener(onStartup);
