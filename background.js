@@ -25,8 +25,22 @@ function onAlarm(alarm) {
     fetchChanges();
 }
 
+function favicon(url) {
+    var split = url.split('://');
+    var host = split.pop();
+    if (!host) throw new Error;
+    var scheme = split.pop();
+    return (scheme ? scheme + '://' : "") + host.split('/').shift() + "/favicon.ico";
+}
+
 function onStartup() {
     console.debug('background.onStartup...');
+
+    try {
+        chrome.browserAction.setIcon({path: favicon(localStorage["api_endpoint"])});
+    } catch (e) {
+    }
+
     chrome.storage.local.get("changes", function(items) {
         updateIcon(items.changes);
     });
