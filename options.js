@@ -1,14 +1,13 @@
-
 // Saves options to localStorage.
 function save_options() {
-    localStorage["api_endpoint"] = document.getElementById("api_endpoint").value;
-    localStorage["query"] = document.getElementById("query").value;
-    // Update status to let user know options were saved.
-    var status = document.getElementById("status");
-    status.innerHTML = "Options Saved.";
-    setTimeout(function() {
+    try {
+        localStorage["api_endpoint"] = document.getElementById("api_endpoint").value.replace(/\/*$/, '');
+        localStorage["query"] = document.getElementById("query").value || "";
+        // TODO: chrome.permissions.request
         chrome.runtime.reload();
-    }, 750);
+    } catch (e) {
+        // TODO: handle validation errors
+    }
 }
 
 // Restores select box state to saved value from localStorage.

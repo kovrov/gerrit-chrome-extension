@@ -8,7 +8,7 @@ function fetchChanges() {
             chrome.storage.local.set({ 'changes': result });
         }, function(e) {
             console.warn("failed to fetch changes:", e.message);
-            delete chrome.storage.local.unreadCount;
+            delete chrome.storage.local.changes;
         });
 }
 
