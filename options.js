@@ -7,7 +7,7 @@ function save_options() {
     var status = document.getElementById("status");
     status.innerHTML = "Options Saved.";
     setTimeout(function() {
-        status.innerHTML = "";
+        chrome.runtime.reload();
     }, 750);
 }
 
