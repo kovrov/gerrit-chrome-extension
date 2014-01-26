@@ -23,6 +23,7 @@
             "background.js",
             "gerrit-api.js"
         ],
+        "persistent": false
     },
 
     "options_page": "options.html"

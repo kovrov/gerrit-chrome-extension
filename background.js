@@ -1,8 +1,6 @@
-var QUERY = localStorage["query"];
-
 function fetchChanges() {
-    // QUERY = ["is:open", "reviewer:self", "-owner:self"].join('+')
-    queryChangeList(QUERY).then(
+    var query = localStorage["query"] || ["is:open", "reviewer:self", "-owner:self"].join('+');
+    queryChangeList(query).then(
         function(result) {
             chrome.storage.local.set({ 'changes': result });
         }, function(e) {

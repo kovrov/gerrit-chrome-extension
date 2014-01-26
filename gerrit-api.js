@@ -1,9 +1,8 @@
-var BASE_URL = localStorage["api_endpoint"];
-
 function queryChangeList(q) {
+    var api_endpoint = localStorage["api_endpoint"];
     return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", BASE_URL + '/changes/?q=' + q);
+        xhr.open("GET", api_endpoint + '/changes/?q=' + q);
         xhr.send();
         // call to reject() is ignored once resolve() has been invoked
         xhr.onload = function() {
