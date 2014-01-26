@@ -20,8 +20,9 @@
 
     "background": {
         "scripts": [
-            "background.js"
-        ]
+            "background.js",
+            "gerrit-api.js"
+        ],
     },
 
     "options_page": "options.html"
