@@ -1,5 +1,12 @@
 var BASE_URL = localStorage["api_endpoint"];
 
+function makeDD(change) {
+    var dd = document.createElement('dd');
+    dd.title = JSON.stringify(change, null, "  ");
+    dd.textContent = change.subject;
+    return dd;
+}
+
 function initUI(items) {
     var list = document.getElementById('list');
     list.innerHTML = "";
@@ -21,10 +28,7 @@ function initUI(items) {
         dt.appendChild(a);
         list.appendChild(dt);
 
-        var dd = document.createElement('dd');
-        dd.textContent = change.subject;
-        // dd.textContent = JSON.stringify(change);
-        list.appendChild(dd);
+        list.appendChild(makeDD(change));
     }
 }
 
