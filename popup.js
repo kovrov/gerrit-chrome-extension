@@ -17,7 +17,10 @@ function initUI(items) {
         if (change.reviewed)
             continue;
 
-        change.read = new Date(items.timestamps[change._number]) >= new Date(change.updated);
+        try {
+            change.read = new Date(items.timestamps[change._number]) >= new Date(change.updated);
+        } catch (e) {
+        }
 
         var dt = document.createElement('dt');
         var a = document.createElement('a');
