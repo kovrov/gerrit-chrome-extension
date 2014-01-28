@@ -4,6 +4,8 @@ function makeDD(change) {
     var dd = document.createElement('dd');
     dd.title = JSON.stringify(change, null, "  ");
     dd.textContent = change.subject;
+    if (change.read)
+        dd.className = "read";
     return dd;
 }
 
@@ -14,6 +16,8 @@ function initUI(items) {
         var change = items.changes[i];
         if (change.reviewed)
             continue;
+
+        change.read = new Date(items.timestamps[change._number]) >= new Date(change.updated);
 
         var dt = document.createElement('dt');
         var a = document.createElement('a');
@@ -33,14 +37,16 @@ function initUI(items) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    chrome.storage.local.get("changes", initUI);
+    chrome.storage.local.get(["changes", "timestamps"], initUI);
 });
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-    for (key in changes) {
-        var storageChange = changes[key];
-        if (key === "changes") {
-            initUI(storageChange.newValue)
-        }
+    if (changes.changes && changes.timestamps) {
+        initUI({
+            "changes": changes.changes.newValue,
+            "timestamps": changes.timestamps.newValue
+        });
+    } else {
+        chrome.storage.local.get(["changes", "timestamps"], initUI);
     }
 });

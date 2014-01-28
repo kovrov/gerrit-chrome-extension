@@ -1,4 +1,4 @@
-function fetchChanges() {
+function fetchChanges(update_id) {
     console.debug("fetching changes...")
     chrome.browserAction.setBadgeBackgroundColor({ color: "#F00" });
     var query = localStorage["query"] || ["is:open", "reviewer:self", "-owner:self"].join('+');
@@ -6,6 +6,14 @@ function fetchChanges() {
         function(result) {
             console.debug("got changes:", result.length);
             chrome.storage.local.set({ 'changes': result });
+
+            // update timestamp/read state
+            var updated = result.filter(function(o){ return o._number === update_id }).pop().updated;
+            chrome.storage.local.get("timestamps", function(items) {
+                var timestamps = items.timestamps || {};
+                timestamps[update_id] = updated;
+                chrome.storage.local.set({ 'timestamps': timestamps });
+            });
         }, function(e) {
             console.warn("failed to fetch changes:", e.message);
             delete chrome.storage.local.changes;
@@ -50,7 +58,13 @@ function onStartup() {
 }
 
 function onNavigate(details) {
-    fetchChanges();
+    console.debug("onNavigate", details.url);
+    try {
+        var update_id = parseInt(details.url.match(/#\/c\/(\d+)/)[1]);
+        fetchChanges(update_id);
+    } catch (e) {
+        console.warn("Failed to parse id for", details.url);
+    }
 }
 
 chrome.alarms.onAlarm.addListener(onAlarm);
@@ -77,6 +91,11 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
     }
 });
 chrome.webNavigation.onReferenceFragmentUpdated.addListener(onNavigate, {
+    url: [
+        { hostSuffix: localStorage["api_endpoint"].split("://").pop() }
+    ]
+});
+chrome.webNavigation.onCommitted.addListener(onNavigate, {
     url: [
         { hostSuffix: localStorage["api_endpoint"].split("://").pop() }
     ]
